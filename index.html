@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emmet Typer Pro</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    body {
+      background: radial-gradient(ellipse at center, #0e0e0e 0%, #050505 100%);
+      color: #00ffe0;
+      font-family: 'Share Tech Mono', monospace;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #00ffe0;
+      text-shadow: 0 0 8px #00ffe0;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      height: 100px;
+      padding: 10px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      background: #101010;
+      color: #00ffe0;
+      border: 2px solid #00ffe0;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #00ffe066;
+      transition: all 0.2s ease-in-out;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #00ffff;
+      box-shadow: 0 0 12px #00ffff99;
+    }
+
+    iframe {
+      width: 100%;
+      max-width: 600px;
+      height: 200px;
+      border: 2px solid #00ffe0;
+      margin-top: 20px;
+      background: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #00ffe033;
+    }
+
+    .stats {
+      margin-top: 1rem;
+      color: #00ffff;
+      text-shadow: 0 0 5px #00ffe0;
+    }
+
+    .target {
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
+
+    code {
+      background: #111;
+      color: #00ffff;
+      padding: 3px 6px;
+      border-radius: 3px;
+      box-shadow: 0 0 5px #00ffe066;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 Emmet Typer Pro - Sci-Fi Mode</h1>
+  <p class="target">Target: <code id="targetCode">ul&gt;li*3</code></p>
+  <textarea id="emmetInput" placeholder="Type Emmet here..."></textarea>
+
+  <div class="stats">
+    <p>⚙️ Accuracy: <span id="accuracy">0</span>%</p>
+    <p>💨 WPM: <span id="wpm">0</span></p>
+    <p>⏱️ Time: <span id="time">0</span> seconds</p>
+  </div>
+
+  <iframe id="preview"></iframe>
+
+  <script>
+    const emmetInput = document.getElementById('emmetInput');
+    const preview = document.getElementById('preview');
+    const accuracyDisplay = document.getElementById('accuracy');
+    const wpmDisplay = document.getElementById('wpm');
+    const timeDisplay = document.getElementById('time');
+    const targetCode = "ul>li*3";
+
+    let startTime = null;
+    let timerInterval = null;
+
+    function simpleEmmetExpand(input) {
+      if (input === 'ul>li*3') {
+        return `<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>`;
+      }
+      if (input === 'div>h1+p') {
+        return `<div><h1>Title</h1><p>Paragraph</p></div>`;
+      }
+      return `<p style="color:red;">No template matched.</p>`;
+    }
+
+    function calculateAccuracy(user, target) {
+      const maxLen = Math.max(user.length, target.length);
+      let correct = 0;
+      for (let i = 0; i < maxLen; i++) {
+        if (user[i] === target[i]) correct++;
+      }
+      return Math.round((correct / maxLen) * 100);
+    }
+
+    function calculateWPM(chars, seconds) {
+      const words = chars / 5;
+      const mins = seconds / 60;
+      return mins > 0 ? Math.round(words / mins) : 0;
+    }
+
+    emmetInput.addEventListener('input', () => {
+      const value = emmetInput.value.trim();
+
+      // start timer
+      if (!startTime) {
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - startTime) / 1000);
+          timeDisplay.textContent = elapsed;
+          wpmDisplay.textContent = calculateWPM(value.length, elapsed);
+        }, 1000);
+      }
+
+      // accuracy
+      const acc = calculateAccuracy(value, targetCode);
+      accuracyDisplay.textContent = acc;
+
+      // preview
+      const html = simpleEmmetExpand(value);
+      preview.srcdoc = html;
+    });
+  </script>
+</body>
+</html>
