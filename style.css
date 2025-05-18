@@ -1,33 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
 body {
-      background: #0f0f0f;
-      color: #00ffe0;
-      font-family: 'Courier New', monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
-    }
-    .mode-selector button {
-      margin: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: #1a1a1a;
-      border: 1px solid #00ffe0;
-      color: #00ffe0;
-      cursor: pointer;
-    }
-    #challengeDisplay {
-      font-size: 1.2rem;
-      margin: 1rem 0;
-    }
-    #inputArea {
-      width: 90%;
-      max-width: 600px;
-      font-size: 1rem;
-      padding: 1rem;
-      border: 1px solid #00ffe0;
-      background: #111;
-      color: #0ff;
-    }
-    .stats {
-      margin-top: 1rem;
-    }
+  font-family: 'Share Tech Mono', monospace;
+  margin: 0;
+  padding: 2rem;
+  background: #0f0f0f;
+  color: #ffffff;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.light {
+  background: #f0f0f0;
+  color: #111;
+}
+
+header {
+  text-align: center;
+}
+
+.mode-toggle button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #00ffe0;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.challenge-box {
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid #00ffe0;
+  background: #111;
+  max-width: 800px;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+body.light .challenge-box {
+  background: #eaeaea;
+  color: #111;
+}
+
+textarea {
+  width: 100%;
+  max-width: 800px;
+  height: 120px;
+  display: block;
+  margin: 1rem auto;
+  padding: 1rem;
+  font-size: 1rem;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #00ffe0;
+  border-radius: 6px;
+  resize: none;
+}
+
+body.light textarea {
+  background: #ffffff;
+  color: #111;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #00ffff;
+}
+
+.stats {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
