@@ -3,28 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Typix - Emmet & HTML Typing Trainer</title>
+  <meta name="description" content="Typix - Practice your Emmet and HTML typing speed and accuracy with this fast-paced, sci-fi themed typing trainer.">
+  <meta property="og:title" content="Typix - Emmet & HTML Typing Trainer" />
+  <meta property="og:description" content="Master Emmet and HTML with this real-time typing practice app." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#00ffe0">
+  <title>⚡ Typix - Emmet & HTML Typing Trainer</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
     <h1>⚡ Typix</h1>
-    <div class="mode-toggle">
-      <button id="modeEmmet">Emmet</button>
-      <button id="modeHtml">HTML</button>
-      <button id="darkToggle">🌙 Toggle Dark Mode</button>
+    <div class="mode-toggle" role="group" aria-label="Mode Selection">
+      <button id="modeEmmet" aria-label="Emmet Mode">Emmet</button>
+      <button id="modeHtml" aria-label="HTML Mode">HTML</button>
+      <button id="darkToggle" aria-label="Toggle Dark Mode">🌙 Theme</button>
     </div>
   </header>
 
   <main>
-    <div id="challengeBox" class="challenge-box">Loading...</div>
-    <textarea id="typingArea" placeholder="Start typing here..."></textarea>
+    <section aria-labelledby="challengeLabel">
+      <div id="challengeBox" class="challenge-box" role="region" aria-live="polite">
+        Loading...
+      </div>
+    </section>
 
-    <div class="stats">
+    <section>
+      <textarea 
+        id="typingArea" 
+        placeholder="Start typing here..." 
+        aria-label="Typing Area"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false">
+      </textarea>
+    </section>
+
+    <section class="stats" aria-label="Typing statistics">
       <p>WPM: <span id="wpm">0</span> | Accuracy: <span id="accuracy">0</span>%</p>
-    </div>
+    </section>
   </main>
 
-  <script src="script.js"></script>
+  <footer>
+    <!-- Optional: footer links or credits in the future -->
+  </footer>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
