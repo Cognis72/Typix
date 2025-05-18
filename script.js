@@ -1,65 +1,80 @@
+let currentMode = 'emmet';
+let challenge = '';
+let startTime = null;
+let timer = null;
+let completed = false;
 
-    const emmetSet = ["ul>li*3", "div>h1+p", "section>article+aside"];
-    const htmlSet = ["<ul><li>Item</li></ul>", "<div><h1>Header</h1><p>Text</p></div>"];
+const emmetSamples = [
+  "ul>li*3", "form>input+button", "div>h1+p", "nav>ul>li*4>a"
+];
 
-    let currentMode = 'emmet';
-    let currentTarget = '';
-    let startTime = null;
-    let timer = null;
+const htmlSamples = [
+  "<ul><li>Item 1</li><li>Item 2</li></ul>",
+  "<form><input type='text'><button>Go</button></form>",
+  "<div><h1>Title</h1><p>Desc</p></div>"
+];
 
-    const display = document.getElementById('challengeDisplay');
-    const input = document.getElementById('inputArea');
-    const wpmEl = document.getElementById('wpm');
-    const accEl = document.getElementById('accuracy');
+const challengeBox = document.getElementById('challengeBox');
+const typingArea = document.getElementById('typingArea');
+const wpmDisplay = document.getElementById('wpm');
+const accDisplay = document.getElementById('accuracy');
 
-    function setMode(mode) {
-      currentMode = mode;
-      generateChallenge();
-      resetStats();
-    }
+document.getElementById('modeEmmet').addEventListener('click', () => switchMode('emmet'));
+document.getElementById('modeHtml').addEventListener('click', () => switchMode('html'));
+document.getElementById('darkToggle').addEventListener('click', () => document.body.classList.toggle('light'));
 
-    function generateChallenge() {
-      const pool = currentMode === 'html' ? htmlSet : currentMode === 'emmet' ? emmetSet : [...emmetSet, ...htmlSet];
-      currentTarget = pool[Math.floor(Math.random() * pool.length)];
-      display.textContent = currentTarget;
-      input.value = '';
-    }
+function switchMode(mode) {
+  currentMode = mode;
+  reset();
+  newChallenge();
+}
 
-    function resetStats() {
-      wpmEl.textContent = '0';
-      accEl.textContent = '0';
-      startTime = null;
-      clearInterval(timer);
-    }
+function newChallenge() {
+  const pool = currentMode === 'emmet' ? emmetSamples : htmlSamples;
+  challenge = pool[Math.floor(Math.random() * pool.length)];
+  challengeBox.textContent = challenge;
+  typingArea.value = '';
+  typingArea.disabled = false;
+  completed = false;
+}
 
-    function calculateStats(typed, target, timeElapsed) {
-      let correct = 0;
-      for (let i = 0; i < typed.length; i++) {
-        if (typed[i] === target[i]) correct++;
-      }
-      const accuracy = Math.round((correct / typed.length) * 100) || 0;
-      const wpm = Math.round((correct / 5) / (timeElapsed / 60)) || 0;
-      return { wpm, accuracy };
-    }
+function reset() {
+  wpmDisplay.textContent = '0';
+  accDisplay.textContent = '0';
+  clearInterval(timer);
+  startTime = null;
+}
 
-    input.addEventListener('input', () => {
-      if (!startTime) {
-        startTime = Date.now();
-        timer = setInterval(() => {
-          const elapsed = (Date.now() - startTime) / 1000;
-          const { wpm, accuracy } = calculateStats(input.value, currentTarget, elapsed);
-          wpmEl.textContent = wpm;
-          accEl.textContent = accuracy;
-        }, 500);
-      }
+typingArea.addEventListener('input', () => {
+  if (completed) return;
 
-      if (input.value === currentTarget) {
-        clearInterval(timer);
-        generateChallenge();
-        resetStats();
-      }
-    });
+  const input = typingArea.value;
+  if (!startTime) {
+    startTime = Date.now();
+    timer = setInterval(updateStats, 300);
+  }
 
-    // Init
-    setMode('emmet');
+  if (input === challenge) {
+    completed = true;
+    clearInterval(timer);
+    updateStats();
+    setTimeout(() => {
+      reset();
+      newChallenge();
+    }, 1500);
+  }
+});
+
+function updateStats() {
+  const typed = typingArea.value;
+  const elapsed = (Date.now() - startTime) / 1000;
+  const correct = [...typed].filter((ch, i) => ch === challenge[i]).length;
+  const acc = Math.round((correct / typed.length) * 100) || 0;
+  const wpm = Math.round((correct / 5) / (elapsed / 60)) || 0;
+
+  wpmDisplay.textContent = wpm;
+  accDisplay.textContent = acc;
+}
+
+switchMode('emmet');
 
