@@ -1,76 +1,114 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
+:root {
+  --primary: #00ffe0;
+  --primary-hover: #00ccbf;
+  --bg-dark: #0f0f0f;
+  --bg-light: #f0f0f0;
+  --text-dark: #ffffff;
+  --text-light: #111;
+  --card-dark: #111;
+  --card-light: #eaeaea;
+  --textarea-dark: #1a1a1a;
+  --textarea-light: #ffffff;
+}
+
 body {
   font-family: 'Share Tech Mono', monospace;
   margin: 0;
   padding: 2rem;
-  background: #0f0f0f;
-  color: #ffffff;
+  background: var(--bg-dark);
+  color: var(--text-dark);
   transition: background 0.3s, color 0.3s;
 }
 
 body.light {
-  background: #f0f0f0;
-  color: #111;
+  background: var(--bg-light);
+  color: var(--text-light);
 }
 
 header {
   text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+
+.mode-toggle {
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 .mode-toggle button {
   margin: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   background: transparent;
-  border: 1px solid #00ffe0;
+  border: 1px solid var(--primary);
   color: inherit;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.mode-toggle button:hover {
+  background-color: var(--primary);
+  color: #000;
 }
 
 .challenge-box {
   margin: 1rem auto;
-  padding: 1rem;
-  border: 1px solid #00ffe0;
-  background: #111;
+  padding: 1.5rem;
+  border: 1px solid var(--primary);
+  background: var(--card-dark);
   max-width: 800px;
   text-align: center;
   font-size: 1.2rem;
-  color: #ffffff;
+  color: var(--text-dark);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 224, 0.2);
 }
 
 body.light .challenge-box {
-  background: #eaeaea;
-  color: #111;
+  background: var(--card-light);
+  color: var(--text-light);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 textarea {
   width: 100%;
   max-width: 800px;
-  height: 120px;
+  height: 140px;
   display: block;
   margin: 1rem auto;
   padding: 1rem;
-  font-size: 1rem;
-  background: #1a1a1a;
-  color: #ffffff;
-  border: 1px solid #00ffe0;
-  border-radius: 6px;
+  font-size: 1.1rem;
+  background: var(--textarea-dark);
+  color: var(--text-dark);
+  border: 1px solid var(--primary);
+  border-radius: 10px;
   resize: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(0, 255, 224, 0.1);
 }
 
 body.light textarea {
-  background: #ffffff;
-  color: #111;
+  background: var(--textarea-light);
+  color: var(--text-light);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
 }
 
 textarea:focus {
   outline: none;
   border-color: #00ffff;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
 }
 
 .stats {
   text-align: center;
-  font-size: 1rem;
-  margin-top: 1rem;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  letter-spacing: 1px;
 }
+
