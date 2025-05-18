@@ -3,21 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Emmet Monkeytype</title>
-  <link rel="stylesheet" href="style.css>
+  <title>Typix - Emmet & HTML Typing Trainer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>⚡ Emmet Typer - Monkey Style</h1>
-  <div class="mode-selector">
-    <button onclick="setMode('emmet')">Emmet</button>
-    <button onclick="setMode('html')">HTML</button>
-    <button onclick="setMode('mixed')">Emmet + HTML</button>
-  </div>
-  <div id="challengeDisplay"></div>
-  <textarea id="inputArea" placeholder="Start typing..."></textarea>
-  <div class="stats">
-    <p>WPM: <span id="wpm">0</span> | Accuracy: <span id="accuracy">0</span>%</p>
-  </div>
+  <header>
+    <h1>⚡ Typix</h1>
+    <div class="mode-toggle">
+      <button id="modeEmmet">Emmet</button>
+      <button id="modeHtml">HTML</button>
+      <button id="darkToggle">🌙 Toggle Dark Mode</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="challengeBox" class="challenge-box">Loading...</div>
+    <textarea id="typingArea" placeholder="Start typing here..."></textarea>
+
+    <div class="stats">
+      <p>WPM: <span id="wpm">0</span> | Accuracy: <span id="accuracy">0</span>%</p>
+    </div>
+  </main>
+
   <script src="script.js"></script>
 </body>
 </html>
