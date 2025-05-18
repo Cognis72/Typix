@@ -3,20 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Emmet Typer Pro</title>
-  <link rel="stylesheet" href"style.css">
+  <title>Emmet Monkeytype</title>
+  <link rel="stylesheet" href="style.css>
 </head>
 <body>
-  <h1>🚀 Emmet Typer Pro – Sci-Fi Mode</h1>
-  <p class="target">Target: <code id="targetCode">Loading...</code></p>
-  <textarea id="emmetInput" placeholder="Type Emmet here..."></textarea>
-
-  <div class="stats">
-    <p>⚙️ Accuracy: <span id="accuracy">0</span>%</p>
-    <p>💨 WPM: <span id="wpm">0</span></p>
-    <p>⏱️ Time: <span id="time">0</span> seconds</p>
+  <h1>⚡ Emmet Typer - Monkey Style</h1>
+  <div class="mode-selector">
+    <button onclick="setMode('emmet')">Emmet</button>
+    <button onclick="setMode('html')">HTML</button>
+    <button onclick="setMode('mixed')">Emmet + HTML</button>
   </div>
-  <iframe id="preview"></iframe>
-  <script> src="script.js"></script>
+  <div id="challengeDisplay"></div>
+  <textarea id="inputArea" placeholder="Start typing..."></textarea>
+  <div class="stats">
+    <p>WPM: <span id="wpm">0</span> | Accuracy: <span id="accuracy">0</span>%</p>
+  </div>
+
+  <script>
+    const emmetSet = ["ul>li*3", "div>h1+p", "section>article+aside"];
+    const htmlSet = ["<ul><li>Item</li></ul>", "<div><h1>Header</h1><p>Text</p></div>"];
+
+    let currentMode = 'emmet';
+    let currentTarget = '';
+    let startTime = null;
+    let timer = null;
+
+    const display = document.getElementById('challengeDisplay');
+    const input = document.getElementById('inputArea');
+    const wpmEl = document.getElementById('wpm');
+    const accEl = document.getElementById('accuracy');
+
+    function setMode(mode) {
+      currentMode = mode;
+      generateChallenge();
+      resetStats();
+    }
+
+    function generateChallenge() {
+      const pool = currentMode === 'html' ? htmlSet : currentMode === 'emmet' ? emmetSet : [...emmetSet, ...htmlSet];
+      currentTarget = pool[Math.floor(Math.random() * pool.length)];
+      display.textContent = currentTarget;
+      input.value = '';
+    }
+
+    function resetStats() {
+      wpmEl.textContent = '0';
+      accEl.textContent = '0';
+      startTime = null;
+      clearInterval(timer);
+    }
+
+    function calculateStats(typed, target, timeElapsed) {
+      let correct = 0;
+      for (let i = 0; i < typed.length; i++) {
+        if (typed[i] === target[i]) correct++;
+      }
+      const accuracy = Math.round((correct / typed.length) * 100) || 0;
+      const wpm = Math.round((correct / 5) / (timeElapsed / 60)) || 0;
+      return { wpm, accuracy };
+    }
+
+    input.addEventListener('input', () => {
+      if (!startTime) {
+        startTime = Date.now();
+        timer = setInterval(() => {
+          const elapsed = (Date.now() - startTime) / 1000;
+          const { wpm, accuracy } = calculateStats(input.value, currentTarget, elapsed);
+          wpmEl.textContent = wpm;
+          accEl.textContent = accuracy;
+        }, 500);
+      }
+
+      if (input.value === currentTarget) {
+        clearInterval(timer);
+        generateChallenge();
+        resetStats();
+      }
+    });
+
+    // Init
+    setMode('emmet');
+  </script>
 </body>
 </html>
