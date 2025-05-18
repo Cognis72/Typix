@@ -1,88 +1,65 @@
-const emmetInput = document.getElementById('emmetInput');
-const preview = document.getElementById('preview');
-const accuracyDisplay = document.getElementById('accuracy');
-const wpmDisplay = document.getElementById('wpm');
-const timeDisplay = document.getElementById('time');
-const targetCodeDisplay = document.getElementById('targetCode');
 
-const emmetChallenges = [
-  "ul>li*3",
-  "div>h1+p",
-  "section>article+aside",
-  "nav>ul>li*4>a"
-];
-let currentChallenge = "";
-let startTime = null;
-let timerInterval = null;
+    const emmetSet = ["ul>li*3", "div>h1+p", "section>article+aside"];
+    const htmlSet = ["<ul><li>Item</li></ul>", "<div><h1>Header</h1><p>Text</p></div>"];
 
-function simpleEmmetExpand(input) {
-  if (input === 'ul>li*3') {
-    return `<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>`;
-  }
-  if (input === 'div>h1+p') {
-    return `<div><h1>Title</h1><p>Paragraph</p></div>`;
-  }
-  if (input === 'section>article+aside') {
-    return `<section><article>Article</article><aside>Aside</aside></section>`;
-  }
-  if (input === 'nav>ul>li*4>a') {
-    return `<nav><ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li><li><a href="#">Link 3</a></li><li><a href="#">Link 4</a></li></ul></nav>`;
-  }
-  return `<p style="color:red;">No template matched.</p>`;
-}
+    let currentMode = 'emmet';
+    let currentTarget = '';
+    let startTime = null;
+    let timer = null;
 
-function calculateAccuracy(user, target) {
-  const len = user.length;
-  let correct = 0;
-  for (let i = 0; i < len; i++) {
-    if (user[i] === target[i]) correct++;
-  }
-  return len > 0 ? Math.round((correct / len) * 100) : 0;
-}
+    const display = document.getElementById('challengeDisplay');
+    const input = document.getElementById('inputArea');
+    const wpmEl = document.getElementById('wpm');
+    const accEl = document.getElementById('accuracy');
 
-function calculateWPM(user, target, seconds) {
-  let correct = 0;
-  for (let i = 0; i < user.length; i++) {
-    if (user[i] === target[i]) correct++;
-  }
-  const words = correct / 5;
-  const minutes = seconds / 60;
-  return minutes > 0 ? Math.round(words / minutes) : 0;
-}
+    function setMode(mode) {
+      currentMode = mode;
+      generateChallenge();
+      resetStats();
+    }
 
-function getNewChallenge() {
-  const random = emmetChallenges[Math.floor(Math.random() * emmetChallenges.length)];
-  currentChallenge = random;
-  targetCodeDisplay.textContent = currentChallenge;
-  emmetInput.value = '';
-  accuracyDisplay.textContent = '0';
-  wpmDisplay.textContent = '0';
-  timeDisplay.textContent = '0';
-  startTime = null;
-  clearInterval(timerInterval);
-  preview.srcdoc = '';
-}
+    function generateChallenge() {
+      const pool = currentMode === 'html' ? htmlSet : currentMode === 'emmet' ? emmetSet : [...emmetSet, ...htmlSet];
+      currentTarget = pool[Math.floor(Math.random() * pool.length)];
+      display.textContent = currentTarget;
+      input.value = '';
+    }
 
-emmetInput.addEventListener('input', () => {
-  const value = emmetInput.value.trim();
+    function resetStats() {
+      wpmEl.textContent = '0';
+      accEl.textContent = '0';
+      startTime = null;
+      clearInterval(timer);
+    }
 
-  if (!startTime) {
-    startTime = Date.now();
-    timerInterval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      timeDisplay.textContent = elapsed;
-      wpmDisplay.textContent = calculateWPM(value, currentChallenge, elapsed);
-    }, 1000);
-  }
+    function calculateStats(typed, target, timeElapsed) {
+      let correct = 0;
+      for (let i = 0; i < typed.length; i++) {
+        if (typed[i] === target[i]) correct++;
+      }
+      const accuracy = Math.round((correct / typed.length) * 100) || 0;
+      const wpm = Math.round((correct / 5) / (timeElapsed / 60)) || 0;
+      return { wpm, accuracy };
+    }
 
-  const acc = calculateAccuracy(value, currentChallenge);
-  accuracyDisplay.textContent = acc;
+    input.addEventListener('input', () => {
+      if (!startTime) {
+        startTime = Date.now();
+        timer = setInterval(() => {
+          const elapsed = (Date.now() - startTime) / 1000;
+          const { wpm, accuracy } = calculateStats(input.value, currentTarget, elapsed);
+          wpmEl.textContent = wpm;
+          accEl.textContent = accuracy;
+        }, 500);
+      }
 
-  if (value === currentChallenge) {
-    preview.srcdoc = simpleEmmetExpand(value);
-    setTimeout(() => getNewChallenge(), 1000);
-  }
-});
+      if (input.value === currentTarget) {
+        clearInterval(timer);
+        generateChallenge();
+        resetStats();
+      }
+    });
 
-getNewChallenge();
+    // Init
+    setMode('emmet');
 
