@@ -191,6 +191,7 @@ const htmlSamples = [
   `<div>footer>p+a</div>`,
   `<div>span</div>`
 ];
+
 const cssSamples = [
   "color: red;", "background-color: #000;", "font-size: 16px;", "margin: 10px;",
   "padding: 20px;", "border: 1px solid #ccc;", "display: flex;", "justify-content: center;",
