@@ -315,5 +315,3 @@ function updateStats() {
 
 switchMode('emmet'); // Initial mode
 
-
-
