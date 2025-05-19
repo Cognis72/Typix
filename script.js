@@ -1,4 +1,3 @@
-
 let currentMode = 'emmet';
 let challenge = '';
 let startTime = null;
@@ -192,24 +191,83 @@ const htmlSamples = [
   `<div>footer>p+a</div>`,
   `<div>span</div>`
 ];
+const cssSamples = [
+  "color: red;", "background-color: #000;", "font-size: 16px;", "margin: 10px;",
+  "padding: 20px;", "border: 1px solid #ccc;", "display: flex;", "justify-content: center;",
+  "align-items: center;", "flex-direction: column;", "position: absolute;", "top: 0;",
+  "left: 0;", "right: 0;", "bottom: 0;", "width: 100%;", "height: 100%;", "z-index: 10;",
+  "overflow: hidden;", "text-align: center;", "font-weight: bold;", "font-style: italic;",
+  "line-height: 1.5;", "text-decoration: underline;", "box-shadow: 0 0 10px #000;",
+  "border-radius: 8px;", "opacity: 0.8;", "transition: all 0.3s ease;", "cursor: pointer;",
+  "visibility: hidden;", "visibility: visible;", "white-space: nowrap;", "word-wrap: break-word;",
+  "background-image: url('img.jpg');", "background-size: cover;", "background-repeat: no-repeat;",
+  "background-position: center;", "border-top: 2px solid #f00;", "border-bottom: 2px dashed #0f0;",
+  "transform: rotate(45deg);", "transform: scale(1.2);", "animation: fadeIn 1s ease;",
+  "animation-delay: 0.5s;", "animation-iteration-count: infinite;", "grid-template-columns: 1fr 1fr;",
+  "grid-gap: 10px;", "outline: none;", "caret-color: blue;", "list-style-type: none;",
+  "overflow-y: scroll;", "overflow-x: hidden;", "object-fit: cover;", "filter: blur(4px);",
+  "backdrop-filter: brightness(0.5);", "pointer-events: none;", "user-select: none;",
+  "content: '';","clip-path: circle(50%);", "scroll-behavior: smooth;", "gap: 1rem;",
+  "min-width: 200px;", "max-width: 800px;", "min-height: 300px;", "max-height: 100vh;",
+  "border-left: 5px dotted red;", "border-right: 5px double blue;", "background-blend-mode: multiply;",
+  "mix-blend-mode: screen;", "font-variant: small-caps;", "letter-spacing: 2px;",
+  "word-spacing: 1em;", "text-transform: uppercase;", "writing-mode: vertical-rl;",
+  "direction: rtl;", "float: right;", "clear: both;", "resize: both;", "column-count: 2;",
+  "column-gap: 40px;", "box-sizing: border-box;", "will-change: transform;",
+  "transition-delay: 0.2s;", "transition-duration: 0.4s;", "transition-property: opacity;",
+  "transition-timing-function: ease-in-out;", "border-collapse: collapse;", "empty-cells: hide;",
+  "caption-side: top;", "table-layout: fixed;", "quotes: '«' '»';", "page-break-before: always;",
+  "orphans: 2;", "widows: 2;", "hyphens: auto;", "tab-size: 4;", "text-shadow: 2px 2px 5px #aaa;"
+];
+
 
 const challengeBox = document.getElementById('challengeBox');
 const typingArea = document.getElementById('typingArea');
 const wpmDisplay = document.getElementById('wpm');
 const accDisplay = document.getElementById('accuracy');
 
-document.getElementById('modeEmmet').addEventListener('click', () => switchMode('emmet'));
-document.getElementById('modeHtml').addEventListener('click', () => switchMode('html'));
-document.getElementById('darkToggle').addEventListener('click', () => document.body.classList.toggle('light'));
+const modeButtons = {
+  emmet: document.getElementById('modeEmmet'),
+  html: document.getElementById('modeHtml'),
+  css: document.getElementById('modeCss')
+};
+
+document.getElementById('darkToggle').addEventListener('click', () => {
+  document.body.classList.toggle('light');
+});
+
+Object.entries(modeButtons).forEach(([mode, button]) => {
+  button.addEventListener('click', () => switchMode(mode));
+});
 
 function switchMode(mode) {
   currentMode = mode;
+  highlightModeButton(mode);
   reset();
   newChallenge();
+  typingArea.focus();
+}
+
+function highlightModeButton(mode) {
+  Object.entries(modeButtons).forEach(([key, button]) => {
+    if (key === mode) {
+      button.style.background = '#00ffe055';
+    } else {
+      button.style.background = 'transparent';
+    }
+  });
+}
+
+function getCurrentPool() {
+  switch (currentMode) {
+    case 'html': return htmlSamples;
+    case 'css': return cssSamples;
+    default: return emmetSamples;
+  }
 }
 
 function newChallenge() {
-  const pool = currentMode === 'emmet' ? emmetSamples : htmlSamples;
+  const pool = getCurrentPool();
   challenge = pool[Math.floor(Math.random() * pool.length)];
   challengeBox.textContent = challenge;
   typingArea.value = '';
@@ -255,6 +313,7 @@ function updateStats() {
   accDisplay.textContent = acc;
 }
 
-switchMode('emmet');
+switchMode('emmet'); // Initial mode
+
 
 
