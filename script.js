@@ -1,8 +1,134 @@
+// Typix Sci-Fi Trainer - script.js
 let currentMode = 'emmet';
 let challenge = '';
 let startTime = null;
 let timer = null;
 let completed = false;
+
+const challengeBox = document.getElementById('challengeBox');
+const typingArea = document.getElementById('typingArea');
+const wpmDisplay = document.getElementById('wpm');
+const accDisplay = document.getElementById('accuracy');
+const keyboardOverlay = document.getElementById('keyboardOverlay');
+
+const modeButtons = {
+  emmet: document.getElementById('modeEmmet'),
+  html: document.getElementById('modeHtml'),
+  css: document.getElementById('modeCss')
+};
+
+document.getElementById('darkToggle').addEventListener('click', () => {
+  document.body.classList.toggle('light');
+});
+
+Object.entries(modeButtons).forEach(([mode, button]) => {
+  button.addEventListener('click', () => switchMode(mode));
+});
+
+function switchMode(mode) {
+  currentMode = mode;
+  highlightModeButton(mode);
+  reset();
+  newChallenge();
+  typingArea.focus();
+}
+
+function highlightModeButton(mode) {
+  Object.entries(modeButtons).forEach(([key, button]) => {
+    button.style.background = key === mode ? '#00ffe055' : 'transparent';
+  });
+}
+
+function reset() {
+  wpmDisplay.textContent = '0';
+  accDisplay.textContent = '0';
+  clearInterval(timer);
+  startTime = null;
+  completed = false;
+  updateKeyboardOverlay();
+}
+
+function getCurrentPool() {
+  switch (currentMode) {
+    case 'html': return htmlSamples;
+    case 'css': return cssSamples;
+    default: return emmetSamples;
+  }
+}
+
+function newChallenge() {
+  const pool = getCurrentPool();
+  challenge = pool[Math.floor(Math.random() * pool.length)];
+  challengeBox.textContent = challenge;
+  typingArea.value = '';
+  typingArea.disabled = false;
+  updateKeyboardOverlay();
+}
+
+const keyRows = [
+  ['1','2','3','4','5','6','7','8','9','0','+'],
+  ['q','w','e','r','t','y','u','i','o','p','{','}'],
+  ['a','s','d','f','g','h','j','k','l',';',],
+  ['z','x','c','v','b','n','m',',','.','/'],
+  [' ']
+];
+
+function updateKeyboardOverlay() {
+  keyboardOverlay.innerHTML = '';
+  keyRows.forEach(row => {
+    const rowDiv = document.createElement('div');
+    rowDiv.classList.add('key-row');
+    row.forEach(char => {
+      const key = document.createElement('div');
+      key.classList.add('key');
+      key.dataset.key = char === ' ' ? 'space' : char;
+      key.textContent = char === ' ' ? '[space]' : char;
+      rowDiv.appendChild(key);
+    });
+    keyboardOverlay.appendChild(rowDiv);
+  });
+}
+
+function activateCurrentKeyHighlight(currentChar) {
+  const normalized = currentChar === ' ' ? 'space' : currentChar?.toLowerCase();
+  document.querySelectorAll('.key').forEach(key => {
+    key.classList.toggle('active', key.dataset.key === normalized);
+  });
+}
+
+typingArea.addEventListener('input', () => {
+  if (completed) return;
+
+  const input = typingArea.value;
+  const nextChar = challenge[input.length] || '';
+  activateCurrentKeyHighlight(nextChar);
+
+  if (!startTime) {
+    startTime = Date.now();
+    timer = setInterval(updateStats, 300);
+  }
+
+  if (input === challenge) {
+    completed = true;
+    clearInterval(timer);
+    updateStats();
+    setTimeout(() => {
+      reset();
+      newChallenge();
+    }, 1500);
+  }
+});
+
+function updateStats() {
+  const typed = typingArea.value;
+  const elapsed = (Date.now() - startTime) / 1000;
+  const correct = [...typed].filter((ch, i) => ch === challenge[i]).length;
+  const acc = Math.round((correct / typed.length) * 100) || 0;
+  const wpm = Math.round((correct / 5) / (elapsed / 60)) || 0;
+
+  wpmDisplay.textContent = wpm;
+  accDisplay.textContent = acc;
+}
 
 const emmetSamples = [
   "ul>li*3",
@@ -97,7 +223,6 @@ const emmetSamples = [
   "figure>img+figcaption",
   "footer>p+a"
 ];
-
 const htmlSamples = [
   `<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>`,
   `<form><input type="text" /><button>Submit</button></form>`,
@@ -151,7 +276,6 @@ const htmlSamples = [
   `<link rel="stylesheet" href="style.css">`,
   `<script src="main.js"></script>`
 ];
-
 const cssSamples = [
   "color: red;", "background-color: #000;", "font-size: 16px;", "margin: 10px;",
   "padding: 20px;", "border: 1px solid #ccc;", "display: flex;", "justify-content: center;",
@@ -181,98 +305,4 @@ const cssSamples = [
   "orphans: 2;", "widows: 2;", "hyphens: auto;", "tab-size: 4;", "text-shadow: 2px 2px 5px #aaa;"
 ];
 
-
-const challengeBox = document.getElementById('challengeBox');
-const typingArea = document.getElementById('typingArea');
-const wpmDisplay = document.getElementById('wpm');
-const accDisplay = document.getElementById('accuracy');
-
-const modeButtons = {
-  emmet: document.getElementById('modeEmmet'),
-  html: document.getElementById('modeHtml'),
-  css: document.getElementById('modeCss')
-};
-
-document.getElementById('darkToggle').addEventListener('click', () => {
-  document.body.classList.toggle('light');
-});
-
-Object.entries(modeButtons).forEach(([mode, button]) => {
-  button.addEventListener('click', () => switchMode(mode));
-});
-
-function switchMode(mode) {
-  currentMode = mode;
-  highlightModeButton(mode);
-  reset();
-  newChallenge();
-  typingArea.focus();
-}
-
-function highlightModeButton(mode) {
-  Object.entries(modeButtons).forEach(([key, button]) => {
-    if (key === mode) {
-      button.style.background = '#00ffe055';
-    } else {
-      button.style.background = 'transparent';
-    }
-  });
-}
-
-function getCurrentPool() {
-  switch (currentMode) {
-    case 'html': return htmlSamples;
-    case 'css': return cssSamples;
-    default: return emmetSamples;
-  }
-}
-
-function newChallenge() {
-  const pool = getCurrentPool();
-  challenge = pool[Math.floor(Math.random() * pool.length)];
-  challengeBox.textContent = challenge;
-  typingArea.value = '';
-  typingArea.disabled = false;
-  completed = false;
-}
-
-function reset() {
-  wpmDisplay.textContent = '0';
-  accDisplay.textContent = '0';
-  clearInterval(timer);
-  startTime = null;
-}
-
-typingArea.addEventListener('input', () => {
-  if (completed) return;
-
-  const input = typingArea.value;
-  if (!startTime) {
-    startTime = Date.now();
-    timer = setInterval(updateStats, 300);
-  }
-
-  if (input === challenge) {
-    completed = true;
-    clearInterval(timer);
-    updateStats();
-    setTimeout(() => {
-      reset();
-      newChallenge();
-    }, 1500);
-  }
-});
-
-function updateStats() {
-  const typed = typingArea.value;
-  const elapsed = (Date.now() - startTime) / 1000;
-  const correct = [...typed].filter((ch, i) => ch === challenge[i]).length;
-  const acc = Math.round((correct / typed.length) * 100) || 0;
-  const wpm = Math.round((correct / 5) / (elapsed / 60)) || 0;
-
-  wpmDisplay.textContent = wpm;
-  accDisplay.textContent = acc;
-}
-
-switchMode('emmet'); // Initial mode
-
+switchMode('emmet'); // Init
