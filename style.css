@@ -1,24 +1,26 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 :root {
   --primary: #00ffe0;
   --primary-hover: #00ccbf;
-  --bg-dark: #0f0f0f;
-  --bg-light: #f0f0f0;
+  --bg-dark: #0a0a0a;
+  --bg-light: #1a1a1a;
   --text-dark: #ffffff;
-  --text-light: #111;
-  --card-dark: #111;
-  --card-light: #eaeaea;
-  --textarea-dark: #1a1a1a;
-  --textarea-light: #ffffff;
+  --text-light: #eeeeee;
+  --card-bg: rgba(0, 255, 224, 0.05);
+  --highlight: #ff00ff;
 }
 
 body {
   font-family: 'Share Tech Mono', monospace;
-  margin: 0;
-  padding: 2rem;
   background: var(--bg-dark);
   color: var(--text-dark);
+  margin: 0;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   transition: background 0.3s, color 0.3s;
 }
 
@@ -29,80 +31,119 @@ body.light {
 
 header {
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  letter-spacing: 1px;
+  color: var(--primary);
+  text-shadow: 0 0 12px var(--primary);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 .mode-toggle {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
-
 .mode-toggle button {
-  margin: 0.5rem;
-  padding: 0.6rem 1.2rem;
   background: transparent;
-  border: 1px solid var(--primary);
-  color: inherit;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  margin: 0.5rem;
+  padding: 0.7rem 1.5rem;
   font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--primary);
+  transition: all 0.3s ease;
 }
-
 .mode-toggle button:hover {
-  background-color: var(--primary);
+  background: var(--primary-hover);
   color: #000;
+  box-shadow: 0 0 15px var(--primary);
 }
 
 .challenge-box {
-  margin: 1rem auto;
-  padding: 1.5rem;
+  background: var(--card-bg);
   border: 1px solid var(--primary);
-  background: var(--card-dark);
-  max-width: 800px;
+  padding: 2rem;
+  font-size: 1.3rem;
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 0 15px var(--primary);
   text-align: center;
-  font-size: 1.2rem;
-  color: var(--text-dark);
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 255, 224, 0.2);
+  transition: background 0.3s;
 }
 
-body.light .challenge-box {
-  background: var(--card-light);
-  color: var(--text-light);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+.typing-section {
+  margin: 2rem auto;
+  text-align: center;
 }
 
 textarea {
-  width: 100%;
-  max-width: 800px;
-  height: 140px;
-  display: block;
-  margin: 1rem auto;
-  padding: 1rem;
-  font-size: 1.1rem;
-  background: var(--textarea-dark);
+  background: #000;
   color: var(--text-dark);
   border: 1px solid var(--primary);
   border-radius: 10px;
+  padding: 1rem;
+  width: 100%;
+  max-width: 900px;
+  font-size: 1.1rem;
+  box-shadow: 0 0 10px var(--primary);
   resize: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 5px rgba(0, 255, 224, 0.1);
-}
-
-body.light textarea {
-  background: var(--textarea-light);
-  color: var(--text-light);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
 }
 
 textarea:focus {
   outline: none;
-  border-color: #00ffff;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+  border-color: var(--highlight);
+  box-shadow: 0 0 20px var(--highlight);
+}
+
+.keyboard-overlay {
+  display: grid;
+  grid-template-rows: repeat(5, auto);
+  gap: 8px;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.key-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.key {
+  padding: 12px 14px;
+  background: rgba(0, 255, 224, 0.08);
+  border: 1px solid var(--primary);
+  color: var(--text-dark);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  min-width: 36px;
+  text-align: center;
+  box-shadow: 0 0 6px var(--primary);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.key.active {
+  background: var(--highlight);
+  color: #000;
+  box-shadow: 0 0 15px var(--highlight);
+}
+
+.stats {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  color: var(--primary);
+  text-shadow: 0 0 8px var(--primary);
+}
+
+footer {
+  margin-top: auto;
+  text-align: center;
+  padding: 1rem;
+  color: #888;
+  border-top: 1px solid var(--primary);
+  font-size: 0.9rem;
 }
 
 .stats {
